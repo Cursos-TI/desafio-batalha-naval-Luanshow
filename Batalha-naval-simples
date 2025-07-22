@@ -1,0 +1,103 @@
+void inicializarTabuleiro(char tabuleiro[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            tabuleiro[i][j] = '-';
+}
+
+void mostrarTabuleiro(char tabuleiro[SIZE][SIZE], int mostrarNavios) {
+    printf("  0 1 2 3 4\n");
+    for (int i = 0; i < SIZE; i++) {
+        printf("%d ", i);
+        for (int j = 0; j < SIZE; j++) {
+            if (tabuleiro[i][j] == 'N' && !mostrarNavios)
+                printf("- ");
+            else
+                printf("%c ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void posicionarNavios(char tabuleiro[SIZE][SIZE], int jogador) {
+    int x, y;
+    printf("Jogador %d, posicione seus %d navios.\n", jogador, SHIPS);
+    int count = 0;
+    while (count < SHIPS) {
+        printf("Digite coordenadas X Y para o navio %d: ", count + 1);
+        scanf("%d %d", &x, &y);
+
+        if (x >= 0 && x < SIZE && y >= 0 && y < SIZE && tabuleiro[x][y] == '-') {
+            tabuleiro[x][y] = 'N';
+            count++;
+        } else {
+            printf("Coordenadas inválidas ou já ocupadas. Tente novamente.\n");
+        }
+    }
+    system("clear||cls");
+}
+
+int atacar(char tabuleiro[SIZE][SIZE], int x, int y) {
+    if (tabuleiro[x][y] == 'N') {
+        tabuleiro[x][y] = 'X';
+        return 1; // acerto
+    } else if (tabuleiro[x][y] == '-') {
+        tabuleiro[x][y] = 'O';
+        return 0; // erro
+    }
+    return -1; // já atacado
+}
+
+int naviosRestantes(char tabuleiro[SIZE][SIZE]) {
+    int count = 0;
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            if (tabuleiro[i][j] == 'N')
+                count++;
+    return count;
+}
+
+int main() {
+    char tab1[SIZE][SIZE], tab2[SIZE][SIZE];
+    int x, y, turno = 1, fim = 0;
+
+    inicializarTabuleiro(tab1);
+    inicializarTabuleiro(tab2);
+
+    posicionarNavios(tab1, 1);
+    posicionarNavios(tab2, 2);
+
+    while (!fim) {
+        if (turno == 1) {
+            printf("Vez do Jogador 1\n");
+            mostrarTabuleiro(tab2, 0);
+            printf("Ataque - digite coordenadas X Y: ");
+            scanf("%d %d", &x, &y);
+            int resultado = atacar(tab2, x, y);
+            if (resultado == 1) printf("Acertou!\n");
+            else if (resultado == 0) printf("Errou.\n");
+            else printf("Já atacou aqui.\n");
+            if (naviosRestantes(tab2) == 0) {
+                printf("Jogador 1 venceu!\n");
+                fim = 1;
+            }
+            turno = 2;
+        } else {
+            printf("Vez do Jogador 2\n");
+            mostrarTabuleiro(tab1, 0);
+            printf("Ataque - digite coordenadas X Y: ");
+            scanf("%d %d", &x, &y);
+            int resultado = atacar(tab1, x, y);
+            if (resultado == 1) printf("Acertou!\n");
+            else if (resultado == 0) printf("Errou.\n");
+            else printf("Já atacou aqui.\n");
+            if (naviosRestantes(tab1) == 0) {
+                printf("Jogador 2 venceu!\n");
+                fim = 1;
+            }
+            turno = 1;
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
