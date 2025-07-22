@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define NUM_ATRIBUTOS 3
+
+typedef struct {
+    char nome[30];
+    int forca;
+    int velocidade;
+    int inteligencia;
+} Carta;
+
+void mostrarCarta(Carta c) {
+    printf("Carta: %s\n", c.nome);
+    printf("Força: %d\n", c.forca);
+    printf("Velocidade: %d\n", c.velocidade);
+    printf("Inteligência: %d\n", c.inteligencia);
+}
+
+int main() {
+    srand(time(NULL));
+
+    // Baralho simples com 4 cartas
+    Carta baralho[4] = {
+        {"Dragão", 90, 60, 70},
+        {"Ninja", 60, 90, 80},
+        {"Robô", 80, 70, 85},
+        {"Gigante", 95, 40, 60}
+    };
+
+    // Sorteio das cartas
+    int indice1 = rand() % 4;
+    int indice2;
+    do {
+        indice2 = rand() % 4;
+    } while (indice2 == indice1); // Garante que as cartas são diferentes
+
+    Carta jogador1 = baralho[indice1];
+    Carta jogador2 = baralho[indice2];
+
+    printf(  Jogador 1 recebeu a seguinte carta:\n");
+    mostrarCarta(jogador1);
+
+    // Escolha do atributo
+    int escolha;
+    printf("\nEscolha o atributo para competir:\n");
+    printf("1 - Força\n2 - Velocidade\n3 - Inteligência\n");
+    printf("Digite o número do atributo: ");
+    scanf("%d", &escolha);
+
+    int valor1, valor2;
+    switch (escolha) {
+        case 1:
+            valor1 = jogador1.forca;
+            valor2 = jogador2.forca;
+            break;
+        case 2:
+            valor1 = jogador1.velocidade;
+            valor2 = jogador2.velocidade;
+            break;
+        case 3:
+            valor1 = jogador1.inteligencia;
+            valor2 = jogador2.inteligencia;
+            break;
+        default:
+            printf("Atributo inválido. Encerrando jogo.\n");
+            return 1;
+    }
+
+    printf("\n Jogador 2 tinha a carta:\n");
+    mostrarCarta(jogador2);
+
+    // Verifica vencedor
+    printf("\n Comparando atributo escolhido...\n");
+    if (valor1 > valor2) {
+        printf(" Jogador 1 venceu!\n");
+    } else if (valor2 > valor1) {
+        printf(" Jogador 2 venceu!\n");
+    } else {
+        printf("⚔ Empate!\n");
+    }
+
+    return 0;
+}
